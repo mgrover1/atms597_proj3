@@ -34,7 +34,7 @@ def getPrecip(startYear, endYear):
         response = requests.get(url)
         tags = BeautifulSoup(response.text, 'html.parser').findAll('a')[5:]  # Returns all hyperlinks of netCDF files
 
-        JJAtags = [tag for tag in tags if int(tag['href'][23:27]) > 600 and int(tag['href'][23:27]) < 900]  # Select only months of JJA
+        JJAtags = [tag for tag in tags if int(tag['href'][23:27]) > 600 and int(tag['href'][23:27]) < 650]  # Select only months of JJA
 
         for tag in JJAtags:
             link = tag['href']
@@ -45,6 +45,11 @@ def getPrecip(startYear, endYear):
             temp = xr.open_dataset(link)  # Read netCDF back in
             precipList.append(temp)  # Append to list of all netCDF files
 
-            os.system('rm ' + link)  # Remove the 'test.nc' file
+            ##################################
+            # Note that for very large data grabs (~1000 files or more), this line should
+            # be deleted and then the downloaded files should be deleted manually later.
+            # This may be a memory problem but I'm not sure.
+            os.system('rm ' + link)  # Remove the netCDF file
+            #################################
 
     return xr.concat(precipList, dim='time')  # Merge all into one xr DataArray
