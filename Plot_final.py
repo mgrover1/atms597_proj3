@@ -107,6 +107,11 @@ def plot_250hPa_winds(lon, lat, u, v, wspd, mode):
     matplotlib figure with filled contours of wind speed overlayed with wind vectors
     
     """
+    # change data and lon to cyclic coordinates
+    u, lon_new = add_cyclic_point(u.values, coord = lon.values)
+    v, lon_new = add_cyclic_point(v.values, coord = lon.values)
+    wspd, lon = add_cyclic_point(wspd.values, coord = lon.values)
+    
     # Create a figure
     fig = plt.figure(figsize = (10, 5))
     
@@ -188,6 +193,7 @@ def plot_250hPa_winds(lon, lat, u, v, wspd, mode):
     plt.show()
 
 def plot_500hPa_winds_geopot(lon, lat, u, v, z, mode):
+    
     """
     Plot filled contours overlayed with vectors
 
@@ -210,6 +216,11 @@ def plot_500hPa_winds_geopot(lon, lat, u, v, z, mode):
     matplotlib figure with filled contours of geopotential height overlayed with wind vectors
     
     """
+    # change data and lon to cyclic coordinates
+    u, lon_new = add_cyclic_point(u.values, coord = lon.values)
+    v, lon_new = add_cyclic_point(v.values, coord = lon.values)
+    z, lon = add_cyclic_point(z.values, coord = lon.values)
+    
     # Create a figure
     fig = plt.figure(figsize = (10, 5))
     
@@ -313,6 +324,11 @@ def plot_850hPa(lon, lat, u, v, t, q, mode):
     matplotlib figure with filled contours of temperature overlayed with contours of spec humidity and wind vectors
     
     """
+    # change data and lon to cyclic coordinates
+    u, lon_new = add_cyclic_point(u.values, coord = lon.values)
+    v, lon_new = add_cyclic_point(v.values, coord = lon.values)
+    q, lon_new = add_cyclic_point(q.values, coord = lon.values)
+    t, lon = add_cyclic_point(t.values, coord = lon.values)
     
     # Create a figure
     fig = plt.figure(figsize = (10, 5))
@@ -425,6 +441,11 @@ def plot_sfc_winds_skt(lonu, latu, u, v, lont, latt, t, mode):
     matplotlib figure with filled contours of skin temperature overlayed with wind vectors
     
     """
+    # change data and lon to cyclic coordinates
+    u, lonu_new = add_cyclic_point(u.values, coord = lonu.values)
+    v, lonu = add_cyclic_point(v.values, coord = lonu.values)
+    t, lont = add_cyclic_point(t.values, coord = lont.values)
+    
     # Create a figure
     fig = plt.figure(figsize=(10, 5))
     
@@ -521,7 +542,8 @@ def plot_TCWV(lon, lat, q, mode):
     matplotlib figure with filled contours of total column water vapor
     
     """
-    
+    # change data and lon to cyclic coordinates
+    q, lon = add_cyclic_point(q.values, coord = lon.values)
     # Create a figure
     fig = plt.figure(figsize=(10, 5))
     
@@ -535,12 +557,13 @@ def plot_TCWV(lon, lat, q, mode):
     data = q
     
     if mode == 'EM' or mode == 'LM':
+        data[data > 80.] = 80.
         # Plot filled contours
         plt.contourf(lon, lat, data, 20, transform = ccrs.PlateCarree(), 
                      cmap = get_cmap("viridis"))
         # Add a color bar
         cbar = plt.colorbar(ax = ax, shrink = .75)
-        cbar.ax.set_ylabel('$g/kg$', fontsize = 18)
+        cbar.ax.set_ylabel('$mm$', fontsize = 18)
     
     elif mode == 'A':
         maxval, minval = np.abs(np.amax(data)), np.abs(np.amin(data))
@@ -551,7 +574,7 @@ def plot_TCWV(lon, lat, q, mode):
         
         # Add a color bar
         cbar = plt.colorbar(ax = ax, shrink = .75)
-        cbar.ax.set_ylabel('$g/kg$', fontsize = 18)
+        cbar.ax.set_ylabel('$mm$', fontsize = 18)
     
     # *must* call draw in order to get the axis boundary used to add ticks:
     fig.canvas.draw()
@@ -598,7 +621,8 @@ lat = xrdata['lat']
 lon = xrdata['lon']
 u = xrdata['u_wind_250']
 v = xrdata['v_wind_250']
-wspd = np.sqrt(np.multiply(u, u) + np.multiply(v, v))
+xrdata = xr.open_dataset('atms597_proj3/data/pressure_anomaly_new.nc')
+wspd = xrdata['wind_spd_250']
 plot_250hPa_winds(lon, lat, u, v, wspd, 'A')
 
 # 500 hPa anomalies
