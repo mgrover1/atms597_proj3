@@ -94,8 +94,12 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
                  'sfc_v_wind':'vwnd.sig995'}
 
     # Setup data link
+<<<<<<< HEAD
     if var != 'wind_spd':
         link = 'https://www.esrl.noaa.gov/psd/thredds/dodsC/Aggregations/ncep.reanalysis/'+var_type+'/'+var_name[var]+'.nc'
+=======
+    link = 'https://www.esrl.noaa.gov/psd/thredds/dodsC/Aggregations/ncep.reanalysis/'+var_type+'/'+var_name[var]+'.nc'
+>>>>>>> upstream/master
 
     if time_scale == 'long_term':
 
@@ -107,19 +111,31 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
                      'v_wind':'vwnd',
                      'skin_temp':'skt',
                      'sfc_u_wind':'uwnd.sig995',
+<<<<<<< HEAD
                      'sfc_v_wind':'vwnd.sig995',
+=======
+                     'sfc_v_wind':'vwnd.sig995'
+>>>>>>> upstream/master
                      'wind_spd' : 'wspd'}
 
         # Create link to data
         link = 'https://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis.derived/'+var_type+'/'+var_name[var]+'.mon.ltm.nc'
 
         # Add time subset
+<<<<<<< HEAD
         ds = xr.open_dataset('https://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis.derived/pressure/air.mon.ltm.nc', use_cftime = True)
+=======
+        ds = xr.open_dataset('https://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis.derived/pressure/air.mon.ltm.nc')
+>>>>>>> upstream/master
         time = (ds['time.season'] == 'JJA')
 
     # Deal with pressure levels
     if var_type == 'pressure':
+<<<<<<< HEAD
         ds = xr.open_dataset(link, use_cftime = True).sel(time=time, level=level).metpy.parse_cf()
+=======
+        ds = xr.open_dataset(link).sel(time=time, level=level).metpy.parse_cf()
+>>>>>>> upstream/master
 
     # Calculate total column water vapor
     elif var_type == 'total_column':
@@ -137,6 +153,12 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
             # Open the dataset and subset for given months, along with only the pressure levels from the other dataset
             ds = xr.open_dataset(link).sel(time=time).metpy.parse_cf()
 
+<<<<<<< HEAD
+=======
+            # Convert moisture units to g/kg
+            ds['q'].metpy.convert_units('g/kg')
+
+>>>>>>> upstream/master
         # Integrate total column water vapor
         ds = ds.sum('level')
 
@@ -152,6 +174,10 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
     if var == 'temp':
         ds[var_name[var]].metpy.convert_units('degC')
 
+<<<<<<< HEAD
+=======
+    # Convert moisture units to g/kg
+>>>>>>> upstream/master
     if var == 'q':
         ds[var_name[var]].metpy.convert_units('g/kg')
 
@@ -205,7 +231,11 @@ def merge_datasets(var_type, time_scale=None):
     datasets = []
 
     # Pressure variables
+<<<<<<< HEAD
     atmos_vars = {250:['u_wind', 'v_wind'],
+=======
+    atmos_vars = {250:['u_wind', 'v_wind', 'wind_spd'],
+>>>>>>> upstream/master
                   500:['u_wind', 'v_wind', 'height'],
                   850:['temp', 'q', 'u_wind', 'v_wind']}
 
@@ -216,6 +246,7 @@ def merge_datasets(var_type, time_scale=None):
     surface = ['sfc_u_wind', 'sfc_v_wind']
 
     if var_type == 'pressure':
+<<<<<<< HEAD
         
         if time_scale is None:
             u = remote_data_grab('u_wind', 'pressure', '250', time_scale)
@@ -228,13 +259,19 @@ def merge_datasets(var_type, time_scale=None):
             datasets.append(remote_data_grab('wind_spd', var_type, '250', time_scale))
             print('Done with wsp 250')
         
+=======
+>>>>>>> upstream/master
         levels = [250, 500, 850]
 
         for lev in levels:
             for var in atmos_vars[lev]:
                 datasets.append(remote_data_grab(var, var_type, lev, time_scale))
                 print('Done with ', var, ' ', lev)
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> upstream/master
     elif var_type == 'surface_gauss':
         for var in surface_gaussian:
             datasets.append(remote_data_grab(var, var_type, None, time_scale))
@@ -280,9 +317,15 @@ def anomaly(var_type):
     anomaly = extreme_precip_ds - long_term_average
 
     # Save the datasets to netcdf so they can be plotted later
+<<<<<<< HEAD
     extreme_precip_ds.drop('crs').to_netcdf('./data/' + var_type + '_extreme_precip_mean.nc')
     long_term_average.drop('crs').to_netcdf('./data/' + var_type + '_long_term_mean.nc')
     anomaly.drop('crs').to_netcdf('./data/' + var_type + '_anomaly.nc')
+=======
+    extreme_precip_ds.drop('crs').to_netcdf(var_type + '_extreme_precip_mean.nc')
+    long_term_average.drop('crs').to_netcdf(var_type + '_long_term_mean.nc')
+    anomaly.drop('crs').to_netcdf(var_type + '_anomaly.nc')
+>>>>>>> upstream/master
 
     return print('Done with all ', var_type, 'variables')
 

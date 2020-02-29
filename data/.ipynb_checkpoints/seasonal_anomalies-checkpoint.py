@@ -136,6 +136,9 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
             # Open the dataset and subset for given months, along with only the pressure levels from the other dataset
             ds = xr.open_dataset(link).sel(time=time).metpy.parse_cf()
 
+            # Convert moisture units to g/kg
+            ds['q'].metpy.convert_units('g/kg')
+
         # Integrate total column water vapor
         ds = ds.sum('level')
 
@@ -151,6 +154,7 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
     if var == 'temp':
         ds[var_name[var]].metpy.convert_units('degC')
 
+    # Convert moisture units to g/kg
     if var == 'q':
         ds[var_name[var]].metpy.convert_units('g/kg')
 
