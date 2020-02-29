@@ -8,4 +8,4 @@
 The following are the submission files:
 1. `PrecipData.py` for parts (1) and (2)
 2. `seasonal_anomalies.py` for part (3)
-3. `plot_final.py` for part (4)
+3. `Plot_final.py` for part (4)
