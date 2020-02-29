@@ -106,7 +106,7 @@ def remote_data_grab(var, var_type, level=None, time_scale=None, time=time_forma
                      'v_wind':'vwnd',
                      'skin_temp':'skt',
                      'sfc_u_wind':'uwnd.sig995',
-                     'sfc_v_wind':'vwnd.sig995',
+                     'sfc_v_wind':'vwnd.sig995'
                      'wind_spd' : 'wspd'}
 
         # Create link to data
